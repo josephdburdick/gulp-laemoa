@@ -11,23 +11,32 @@ gulp.on('err', function(err){
 
 gulp.task('styles', function () {
   return gulp.src('app/styles/main.scss')
-    .pipe(plumber({
-      errorHandler: onError
-    }))
+    .pipe(plumber())
     .pipe($.rubySass({
         style: 'condensed'
     }))
     .pipe($.autoprefixer('last 1 version'))
-    
     .pipe(gulp.dest('.tmp/styles'))
+    // .pipe(gulp.dest('dist/styles')) //.tmp/styles
     .pipe($.size());
 });
 
+// gulp.task('scripts', function () {
+//   return gulp.src('app/scripts/**/*.js')
+//     .pipe($.jshint())
+//     .pipe($.jshint.reporter($.jshintStylish))
+//     .pipe($.size());
+// });
+
 gulp.task('scripts', function () {
-  return gulp.src('app/scripts/**/*.js')
-    .pipe($.jshint())
-    .pipe($.jshint.reporter($.jshintStylish))
-    .pipe($.size());
+    return gulp.src('app/scripts/**/*.js')
+        .pipe($.jshint('.jshintrc'))
+        .pipe($.jshint.reporter('default'))
+        .pipe($.concat('main.js'))
+        .pipe($.livereload(server))
+        .pipe($.uglify())
+        .pipe(gulp.dest('dist/scripts'))
+        .pipe($.size());
 });
 
 gulp.task('html', ['styles', 'scripts'], function () {
@@ -44,9 +53,7 @@ gulp.task('html', ['styles', 'scripts'], function () {
     .pipe(cssFilter.restore())
     .pipe($.useref.restore())
     .pipe($.useref())
-    .pipe(plumber({
-      errorHandler: onError
-    }))
+    .pipe(plumber())
     .pipe(gulp.dest('dist'))
     .pipe($.size());
 });
@@ -58,9 +65,7 @@ gulp.task('images', function () {
       progressive: true,
       interlaced: true
     })))
-    .pipe(plumber({
-      errorHandler: onError
-    }))
+    .pipe(plumber())
     .pipe(gulp.dest('dist/images'))
     .pipe($.size());
 });
@@ -110,9 +115,7 @@ gulp.task('wiredep', function () {
     .pipe(wiredep({
         directory: 'app/bower_components'
     }))
-    .pipe(plumber({
-      errorHandler: onError
-    }))
+    .pipe(plumber())
     .pipe(gulp.dest('app/styles'));
 
   gulp.src('app/*.html')
@@ -120,9 +123,7 @@ gulp.task('wiredep', function () {
         directory: 'app/bower_components',
         exclude: ['bootstrap-sass-official']
     }))
-    .pipe(plumber({
-      errorHandler: onError
-    }))
+    .pipe(plumber())
     .pipe(gulp.dest('app'));
 });
 

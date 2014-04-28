@@ -1,10 +1,33 @@
-$icon-font-path: "../bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
+/*
 
-// bower:scss
+ Variables
+
+ */
+$icon-font-path: "../bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
+$introHeight: 400px;
+$navWidth : 300px;
+$speed : .5s;
+$brand-primary: gray;
+
+/* 
+
+ Imports
+
+*/
 @import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss";
-// endbower
+@import url('http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400');
+/* 
+ 
+ Overrides
+
+*/
 *      { box-sizing: border-box;}
-a      { text-decoration: none!important; }
+a      { text-decoration: none!important; 
+          &:hover{
+            color: lighten($brand-primary, 20%);
+          }
+        }
+.btn   { border-radius: 999px; transition: all .2s; }
 
 .browsehappy {
   margin: 0.2em 0;
@@ -12,60 +35,107 @@ a      { text-decoration: none!important; }
   color: #000;
   padding: 0.2em 0;
 }
-
-/* Everything but the jumbotron gets side spacing for mobile first views */
+body   { 
+  font-family: 'Source Sans Pro'; font-weight: 400; 
+  background: green;
+  &.nav-open{
+    overflow : hidden;
+    // header.main,
+    div.page,
+    section.intro{
+      left: $navWidth;
+    }
+    #nav-toggle > .fa-bars:before{
+      content: '';
+    }
+    .bg-cover, .row{
+      @include opacity(0);
+    }
+  }
+}
 header, 
 footer { width: 100%; }
 
+.container-fluid{
+  // @include center-block;
+  max-width: 1200px;
+}
+section{ padding: 80px 0; }
+.row { @include transition(all, $speed/2, $speed); }
+
+
 /* Custom page header */
-header.main {
+header.main{
   position   : fixed;
-  background : rgba(255,255,255,.1);
-  /* Make the masthead heading the same height as the navigation */
-  h3 {
+  top: 0;
+  z-index: 10;
+  @include transition(all, $speed);
+  @include gradient-vertical(rgba(0,0,0,.35), rgba(0,0,0,.0));
+
+  h3{
     margin-top    : 0;
     margin-bottom : 0;
     line-height   : 40px;
     bottom        : padding-19px;
   }
-  .menu-icon{
+  #nav-toggle{
     display   : inline-block;
     position  : relative;
-    float     : right;
     text-align: center;
     padding   : 0;
-    @include square(80px);
-    @include transition (all, .5s);
-    &:hover{
-      background: rgba(255,255,255,.75);
-    }
-    span{
-      display    : block;
-      height     : 3px;
-      background : lighten($gray,20%);
-      top        : 50%;
-      margin-top : -3px;
-      left       : 10px;
-      right      : 10px;
-      max-width  : 50px; 
-      position: absolute;
-      &:before, &:after{
-        position   : absolute;
-        content    : '';
-        background : inherit;
-        width      : 100%;
-        height     : inherit;
-        display    : block;
-        left       : 0;
-        right      : 0;
-      }
-      &:before { margin-top: -8px; }
-      &:after  { margin-top: 8px; }
-    }  
+    font-size : 30px;
+    line-height: 60px;
+    @include square(60px);
+    @include transition (all, $speed);
+  }
+  &.active{
+    background: rgba(255,255,255,.25);
   }
 }
 
-/* Custom page footer */
+nav.main{
+  position   : fixed;
+  left       : 0;
+  top        : 0;
+  bottom     : 0; 
+  background : #111;
+  width      : $navWidth;
+  z-index    : 0;
+  padding    : 100px 10px 50px;
+  overflow   : auto;
+  h1,h2,h3,h4{
+    text-transform: uppercase;
+    font-size: 75%;
+    letter-spacing: 1px;
+    color: #ccc;
+  }
+  ul{
+    list-style: none;
+    margin : 0;
+    padding: 0;
+  
+    li{
+      border-top:1px solid #444;
+      &:first-child{
+        border-top: none;
+      }
+      a{
+        display: block;
+        padding: 10px 0;
+        &:hover{
+          
+        }
+      }
+    }
+  }
+}
+div.page{
+  z-index: 1;
+  position:relative;
+  left:0;
+  @include transition(left, $speed);
+}
+
 footer.main {
   padding-top : 19px;
   color       : #777;
@@ -84,14 +154,83 @@ footer.main {
 }
 
 /* Main marketing message and sign up button */
-.jumbotron {
+.intro {
+  background: black;
   text-align: center;
   border-bottom: 1px solid #e5e5e5;
-  background: darken($gray, 40%);
-  padding: 100px 40px 60px;
-  .btn {
-    font-size: 21px;
-    padding: 14px 24px;
+  position: fixed;
+  top: 0;
+  left:0;
+  right:0;
+  z-index: 1;
+  font-weight: 200; 
+
+  height: $introHeight;
+
+  color: #999;
+  @include transition(left, $speed);
+  
+  .bg-cover{
+    position:absolute;
+    background: black; //url('../images/bg-cover-blurred.jpg') fixed center center;
+    top:0;
+    width: 100%;
+    height: 100%;
+    z-index: 9;
+    opacity: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    @include transition(all, $speed/2, $speed);
+    @include img-retina('../images/black_paper.png','../images/black_paper_@2X.png', 400, 400);
+  }
+  h1, h2, p { z-index: 5; margin: 0 0 5px 0;}
+  .btn{
+    margin-top: 10px;
+    background: #222;
+    color:#ccc;
+    z-index: 10;
+    &:hover{
+      background:#ccc;
+      color: #666;
+    }
+  }
+}
+.intro + section{
+  z-index    : 2;
+  background : white;
+  position   : relative;
+  margin-top : $introHeight;
+}
+.slideshow{
+  img{
+    width: 100%;
+    height: auto;  
+  }
+}
+section.work{
+  .row{
+    margin-bottom: 60px;
+    padding-bottom: 60px;
+    border-bottom: 1px solid #ddd;
+
+  }
+}
+
+.project{
+  background: #fefefe;
+
+  aside{
+    
+  }
+  h3{
+    position: relative;
+    text-transform: uppercase;
+    border-bottom: 1px solid #ccc;
+    top: -32px;
+    padding: 0 0 5px;
   }
 }
 
